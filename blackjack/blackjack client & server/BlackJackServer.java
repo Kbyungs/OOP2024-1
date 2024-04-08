@@ -13,7 +13,6 @@ import java.util.Vector;
 
 
 
-
 class BlackJackServer {
     public static int inPort = 9999;
     public static Vector<Client> clients = new Vector<Client>();
