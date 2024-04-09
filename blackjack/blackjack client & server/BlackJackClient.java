@@ -11,12 +11,13 @@ import java.util.*;
 
 class BlackJackClient {
     static int inPort = 9999;
-    static String address ="192.168.0.104";
+    static String address ="192.168.48.166";
     static public PrintWriter out;
     static public BufferedReader in;
     static int card=0;
     static String nickName = null;
     static boolean firstDraw = true;
+    static boolean hadAce = false;
 
 
     public static void main(String[] args) {
@@ -48,20 +49,24 @@ class BlackJackClient {
                             if (newcard == 13) System.out.println("new card is KING");
                             card += 10;
                         } else {
-                            if (newcard == 1) System.out.println("new card is A");
+                            if (newcard == 1) {
+                                System.out.println("new card is A");
+                                hadAce = true;
+                            }
                             else System.out.println("new card is "+newcard);
                             card += newcard;
-
                         }
+
+                        if (hadAce && card + 10 <= 21) card += 10;
 
                         if (card > 21) {
                             System.out.println(card+", Over 21! \n\n");
-                            firstDraw = true;
+                            hadAce = false; firstDraw = true;
                             card = getCard(in);
                         }
                         if (card == 21) {
                             System.out.println(card+", BLACKJACK! \n\n");
-                            firstDraw = true;
+                            hadAce = false; firstDraw = true;
                             card = getCard(in);
                         }
 
@@ -72,15 +77,15 @@ class BlackJackClient {
                         dealer = Integer.parseInt(msg);
                         if ((card > dealer) || (dealer > 21)) {
                             System.out.println("You win!\n\n");
-                            firstDraw = true;
+                            hadAce = false; firstDraw = true;
                         }
                         else if (card < dealer) {
                             System.out.println("Dealer win!\n\n");
-                            firstDraw = true;
+                            hadAce = false; firstDraw = true;
                         }
                         else {
                             System.out.println("tie! \n\n");
-                            firstDraw = true;
+                            hadAce = false; firstDraw = true;
                         }
 
                         card = getCard(in);
