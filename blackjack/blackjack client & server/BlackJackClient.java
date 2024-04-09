@@ -1,7 +1,7 @@
 // Todo list
 // 1. J,Q,K -> clear
 // 2. improve dealer strategy
-// 3. display history
+// 3. display history -> clear
 // 4. split, insurance
 
 import java.io.*;
@@ -11,14 +11,16 @@ import java.util.*;
 
 class BlackJackClient {
     static int inPort = 9999;
-    static String address ="192.168.48.166";
+    static String address ="192.168.0.6";
     static public PrintWriter out;
     static public BufferedReader in;
     static int card=0;
     static String nickName = null;
     static boolean firstDraw = true;
     static boolean hadAce = false;
-
+    static int totalGame = 0;
+    static int wins = 0;
+    static int ties = 0;
 
     public static void main(String[] args) {
         String msg;
@@ -61,12 +63,12 @@ class BlackJackClient {
 
                         if (card > 21) {
                             System.out.println(card+", Over 21! \n\n");
-                            hadAce = false; firstDraw = true;
+                            hadAce = false; firstDraw = true; totalGame++;
                             card = getCard(in);
                         }
                         if (card == 21) {
                             System.out.println(card+", BLACKJACK! \n\n");
-                            hadAce = false; firstDraw = true;
+                            hadAce = false; firstDraw = true; totalGame++; wins++;
                             card = getCard(in);
                         }
 
@@ -77,15 +79,15 @@ class BlackJackClient {
                         dealer = Integer.parseInt(msg);
                         if ((card > dealer) || (dealer > 21)) {
                             System.out.println("You win!\n\n");
-                            hadAce = false; firstDraw = true;
+                            hadAce = false; firstDraw = true; totalGame++; wins++;
                         }
                         else if (card < dealer) {
                             System.out.println("Dealer win!\n\n");
-                            hadAce = false; firstDraw = true;
+                            hadAce = false; firstDraw = true; totalGame++;
                         }
                         else {
                             System.out.println("tie! \n\n");
-                            hadAce = false; firstDraw = true;
+                            hadAce = false; firstDraw = true; totalGame++; ties++;
                         }
 
                         card = getCard(in);
@@ -95,6 +97,11 @@ class BlackJackClient {
                         in.close();
                         out.close();
                         socket.close();
+                        System.out.println("Number of Player wins: " + wins);
+                        System.out.println("Number of Dealer wins: " + (totalGame-wins-ties));
+                        System.out.println("Number of tie games: " + ties);
+                        System.out.println("Total \"" + totalGame + "\" of games played is");
+                        System.out.println("Percentage of Player wins: " + (100*wins/totalGame) + "%");
                         break;
                 }
             }
