@@ -17,6 +17,7 @@ import java.util.Vector;
 class BlackJackServer {
     public static int inPort = 9999;
     public static Vector<Client> clients = new Vector<Client>();
+    public static boolean hadAce = false;
 
 
     public static void main(String[] args) throws Exception {
@@ -38,7 +39,10 @@ class BlackJackServer {
         Random random = new Random();
         int newcard = random.nextInt(13)+1;
         if (newcard > 1 && newcard < 11) System.out.println("new card is "+newcard);
-        if (newcard == 1) System.out.println("new card is A");
+        if (newcard == 1) {
+            System.out.println("new card is A");
+            hadAce = true;
+        }
         if (newcard == 11) System.out.println("new card is JACK");
         if (newcard == 12) System.out.println("new card is QUEEN");
         if (newcard == 13) System.out.println("new card is KING");
@@ -51,7 +55,6 @@ class BlackJackServer {
         PrintWriter out = null;
         BufferedReader in = null;
         int card;
-        boolean hadAce = false;
 
         public Client(Socket socket) throws Exception {
             System.out.println("\n\n"+socket.getInetAddress()+ "  join "); //3번
@@ -62,24 +65,10 @@ class BlackJackServer {
             start();
 
             int newCard = getCard();
-            if (newCard > 10) {
-                if (newCard == 11) System.out.println("new card is JACK");
-                if (newCard == 12) System.out.println("new card is QUEEN");
-                if (newCard == 13) System.out.println("new card is KING");
-                card += 10;
-            } else {
-                if (newCard == 1) {
-                    System.out.println("new card is A");
-                    hadAce = true;
-                }
-                else System.out.println("new card is "+newCard);
-                card += newCard;
-                if (hadAce && card + 10 <= 21) card += 10;
-            }
-//            card += newCard;
+            if (newCard >= 10) card += 10;
+            else card += newCard;
             send(""+newCard); //4번 client에게 카드 주는거
             System.out.println(socket.getInetAddress()+ "  has "+ card);
-
         }
 
         public void send(String msg) {
@@ -91,7 +80,6 @@ class BlackJackServer {
         public void run() {
             String msg;
             int newcard;
-
             try {
                 while(true) {
                     msg = in.readLine(); //6번
@@ -101,22 +89,33 @@ class BlackJackServer {
                         newcard = getCard();
                         if (newcard > 10) card += 10;
                         else card += newcard;
+                        if (hadAce && card + 10 <= 21) card += 10;
                         System.out.println(socket.getInetAddress()+" has "+card);
                         send(""+newcard); //7번
 
+
                         if (card > 21) {
                             System.out.println(socket.getInetAddress()+" has "+card+", Over 21! \n\n");
-                            card = getCard();
                             hadAce = false;
+                            int tempcard = getCard();
+                            if (tempcard >= 10) card = 10;
+                            else {
+                                card = tempcard;
+                                if (card == 1) hadAce = true;
+                            }
                             send(""+card);
                         }
                         if (card == 21) {
                             System.out.println(socket.getInetAddress()+" has "+card+", BLACKJACK! \n\n");
-                            card = getCard();
                             hadAce = false;
+                            int tempcard = getCard();
+                            if (tempcard >= 10) card = 10;
+                            else {
+                                card = tempcard;
+                                if (card == 1) hadAce = true;
+                            }
                             send(""+card);
                         }
-
                     }
                     else if (msg.equalsIgnoreCase("2")) {
                         System.out.println(socket.getInetAddress()+" hold");
@@ -149,12 +148,9 @@ class BlackJackServer {
                         socket.close();
                         break;
                     }
-
                 }
             }
             catch (IOException e) { }
         }
-
     }
-
 } 
