@@ -40,7 +40,7 @@ public class DetectionGame {
         System.out.print("Enter number of mines :");
         num_mine = sc.nextInt();
         while ((num_mine >= width*width) || (num_mine < 1)) {
-            System.out.println("Invalid number of mines, must be 0 ~ " +width*width);
+            System.out.print("Invalid number of mines, must be 0 ~ " +width*width+" : ");
             num_mine = sc.nextInt();
         }
         //Map파일에서 map클래스 새로 선언(설정한대로)
@@ -77,6 +77,7 @@ public class DetectionGame {
             return 1;
         } else { // 실패했다
             num_try++;
+            map.updateMapfailed(r,c);
             return 0;
         }
     }
