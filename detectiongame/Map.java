@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class Map {
     int width, num_mine, find_mine;
-    int[][] mineMap, displayMap;
+    String[][] mineMap, displayMap;
     boolean[] isClicked;
     HashMap<Integer, Integer> minePosition;
 
@@ -12,12 +12,12 @@ public class Map {
         this.width = width;
         this.num_mine = num_mine;
         //사이즈만큼 mineMap, displayMap 선언하고 0으로 채우기
-        mineMap = new int[width][width];
-        displayMap = new int[width][width];
+        mineMap = new String[width][width];
+        displayMap = new String[width][width];
         isClicked = new boolean[width*width];
         for (int i = 0; i < width*width; i++) {
-            mineMap[i/width][i%width] = 0;
-            displayMap[i/width][i%width] = 0;
+            mineMap[i/width][i%width] = "X";
+            displayMap[i/width][i%width] = "?";
         }
 
         //create mines
@@ -36,7 +36,7 @@ public class Map {
             int r = minePosition.get(i) / width;
             int c = minePosition.get(i) % width;
             System.out.println(r+", "+c);;
-            mineMap[r][c] = 1;
+            mineMap[r][c] = "O";
         }
 
         printMap(mineMap);
@@ -80,7 +80,7 @@ public class Map {
         System.out.println("there are \""+mine_nearby+"\" mines nearby");
     }
 
-    public void printMap(int[][] map) {
+    public void printMap(String[][] map) {
         System.out.println();
         System.out.print("r\\c ");
         for (int i = 0; i < map.length; i++) {
@@ -96,7 +96,12 @@ public class Map {
     }
 
     public void updateMap(int r, int c) {
-        displayMap[r][c] = 1;
+        displayMap[r][c] = "O";
+        printMap(displayMap);
+    }
+
+    public void updateMapfailed(int r, int c) {
+        displayMap[r][c] = "X";
         printMap(displayMap);
     }
 }
