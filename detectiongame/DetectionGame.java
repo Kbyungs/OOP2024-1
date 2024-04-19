@@ -19,6 +19,7 @@ public class DetectionGame {
 
     public static  void main(String[] args) {
         int find = 0;
+//        int num_try, num_success;
         initial();
         //다 찾을 때까지 무한 반복
         while (find < num_mine) find += guess();
@@ -85,6 +86,6 @@ public class DetectionGame {
     public static void checkStatistics() {
         System.out.println("total try: "+num_try);
         if (num_try == 0) System.out.println("probability of success: 0%");
-        else System.out.println("probability of success: "+(num_success/num_try*100)+"%");
+        else System.out.println("probability of success: "+((double)num_success/num_try*100)+"%");
     }
 }
