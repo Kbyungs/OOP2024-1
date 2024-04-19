@@ -85,6 +85,5 @@ public class DetectionGame {
         System.out.println("total try: "+num_try);
         if (num_try == 0) System.out.println("probability of success: 0%");
         else System.out.println("probability of success: "+(num_success/num_try*100)+"%");
-        return;
     }
 }
