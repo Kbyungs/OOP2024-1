@@ -46,13 +46,13 @@ public class Team {
     public void addMember(Player p) { members.add(p); }
 
     public void removeMember(String n) {
-        for (int i = 0; i < getSize(); i++) {
-            if (members.get(i).name == n) members.remove(i);
+        for (int i = getSize()-1; i >= 0; i--) {
+            if (members.get(i).name.equals(n)) members.remove(i);
         }
     }
 
     public void printTeam() {
-        System.out.println(name + ", " +getSize()+" 명, "+ rank+"등");
+        System.out.println(name + ", " +getSize()+" 명, "+ rank+" 등");
         for (int i = 0; i < getSize(); i++) System.out.println(members.get(i).name);
         System.out.println("captin is "+captain.name);
     }
