@@ -4,25 +4,23 @@ public class Player {
     public String name;
     private int age;
 
-    public Player() {
+    public Player() { num_Players++; }
+
+    public Player(String name) {
+        this.name = name;
+        num_Players++;
+    }
+    public Player(String name, int age) {
+        this.name = name;
+        this.age = age;
         num_Players++;
     }
 
-    public Player(String n) {
-        name = n;
-        num_Players++;
-    }
-    public Player(String n, int a) {
-        name = n;
-        age = a;
-        num_Players++;
-    }
-
-    public void setName(String n) { name = n; }
+    public void setName(String name) { this.name = name; }
 
     public String getName( ) { return name; }
 
-    public void setAge(int a) { age = a; }
+    public void setAge(int age) { this.age = age; }
 
     public int getAge( ) { return age; }
 }
