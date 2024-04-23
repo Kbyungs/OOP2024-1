@@ -10,16 +10,18 @@ import java.util.*;
 
 class MineClient {
     static int inPort = 9999;
-    static String address ="192.168.0.103";
+    static String address ="10.10.193.49";
     static public PrintWriter out;
     static public BufferedReader in;
-    static int width=0;
-    static int num_mine=0;
+    static int width = 0;
+    static int num_mine = 0;
+    static int num_try, num_success;
     static Map map;
 
 
     public static void main(String[] args) {
-        int find=0;
+        int find = 0;
+        int guessNum = 0;
 
         try (Socket socket = new Socket(address, inPort)) {
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -28,13 +30,19 @@ class MineClient {
             initial();
 
 
-            while(find<num_mine) {
-                find += guess();
-                System.out.println((num_mine-find)+" mines left");
+            while(find < num_mine) {
+                guessNum = guess();
+                find += guessNum;
+                if (guessNum != Integer.MAX_VALUE) System.out.println((num_mine-find)+" mines left");
+                else break;
             }
 
-            System.out.println("Success found "+find+" mines !");
-            out.println("Done");
+            if (guessNum != Integer.MAX_VALUE) {
+                System.out.println("Success found " + find + " mines !");
+                out.println("Done");
+            } else {
+                out.println("check");
+            }
             in.close();
             out.close();
             socket.close();
@@ -45,7 +53,8 @@ class MineClient {
 
 
     public static void initial() {
-        System.out.println("Welcome to the Mine Game !");
+        System.out.println("I My Me \"Mine\" Game !");
+        num_success = 0; num_try = 0;
         Scanner scan = new Scanner (System.in);
 
         System.out.print("Enter the width (1~10, width x width) :");
@@ -70,31 +79,51 @@ class MineClient {
     public static int guess() throws IOException {
         Scanner scan = new Scanner (System.in);
 
-        System.out.print("\n Enter x coordinate(0 ~ "+width+") :");
-        int x = scan.nextInt();
-        while ((x < 0) || (x >= width)) {
-            System.out.println(" Invalid x, enter a new x coordinate");
-            x = scan.nextInt();
+        System.out.print("\n Enter Row coordinate(0 ~ "+width+") :");
+        int r = scan.nextInt();
+        while ((r < 0) || (r >= width)) {
+            if (r == -1) {
+                checkStatistics();
+                return Integer.MAX_VALUE;
+            }
+            System.out.println(" Invalid Row, enter a new Row coordinate");
+            r = scan.nextInt();
         }
-        System.out.print(" Enter y coordinate(0 ~ "+width+") :");
-        int y = scan.nextInt();
-        while ((y < 0) || (y >= width)) {
-            System.out.println(" Invalid y, enter a new y coordinate");
-            y = scan.nextInt();
+        System.out.print(" Enter Column coordinate(0 ~ "+width+") :");
+        int c = scan.nextInt();
+        while ((c < 0) || (c >= width)) {
+            if (c == - 1) {
+                checkStatistics();
+                return Integer.MAX_VALUE;
+            }
+            System.out.println(" Invalid Column, enter a new Column coordinate");
+            c = scan.nextInt();
         }
-        out.println(x+","+y);
+        out.println(r+","+c);
 
         String msg = in.readLine();
         int result = Integer.parseInt(msg);
-        if (result>=0) {
-            System.out.println("   Find mine at ("+x+", "+y+")");
-            map.updateMap(x,y);
+        if (result>0) {
+            System.out.println("   Find mine at ("+r+", "+c+")");
+            num_try++; num_success++;
+            map.updateMap(r,c);
             return 1;
+        } else if (result == 0) {
+            System.out.println("you already find!!");
+            return 0;
+        } else {
+            System.out.println("   No mine at ("+r+", "+c+")");
+            num_try++;
+            map.updateMapFailed(r,c);
+            return 0;
         }
-        System.out.println("   No mine at ("+x+", "+y+")");
-        return 0;
     }
 
+    public static void checkStatistics() {
+        System.out.println("total try: "+num_try);
+        if (num_try == 0) System.out.println("probability of success: 0%");
+        else System.out.print("probability of success: "+((double)num_success/num_try*100)+"%");
+    }
 
 }
 
