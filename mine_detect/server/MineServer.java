@@ -36,7 +36,7 @@ class MineServer {
         Socket socket;
         PrintWriter out = null;
         BufferedReader in = null;
-        int width=0, num_mine=0;
+        int width = 0, num_mine = 0;
         Map map;
 
 
@@ -69,33 +69,29 @@ class MineServer {
             try {
                 while(true) {
                     msg = in.readLine();
-                    if(msg.equalsIgnoreCase("Done")) {
+                    if(msg.equalsIgnoreCase("Done") || msg.equalsIgnoreCase("check")) {
                         break;
                     }
                     String[] arr = msg.split(",");
-                    int x = Integer.parseInt(arr[0]);
-                    int y = Integer.parseInt(arr[1]);
+                    int r = Integer.parseInt(arr[0]);
+                    int c = Integer.parseInt(arr[1]);
 
-                    int result = map.checkMine(x,y);
+                    int result = map.checkMine(r,c);
                     out.println(""+result);
                     if(result > 0) {
-                        map.updateMap(x, y);
+                        map.updateMap(r,c);
+                    } else {
+                        map.updateMapFailed(r,c);
                     }
                 }
 
-                System.out.println("Success found "+num_mine+" mines !");
+                if (!msg.equals("check")) System.out.println("Success found "+num_mine+" mines !");
+                else System.out.println("Check Statistics");
                 out.close();
                 in.close();
                 socket.close();
             }
             catch (IOException e) { }
         }
-
-
-
-
-
-
     }
-
 } 
