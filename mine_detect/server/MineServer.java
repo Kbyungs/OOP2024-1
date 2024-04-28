@@ -77,7 +77,8 @@ class MineServer {
                     int c = Integer.parseInt(arr[1]);
 
                     int result = map.checkMine(r,c);
-                    out.println(""+result);
+                    int hint = map.hint(r,c);
+                    out.println(""+result+"+"+hint);
                     if(result > 0) {
                         map.updateMap(r,c);
                     } else {
