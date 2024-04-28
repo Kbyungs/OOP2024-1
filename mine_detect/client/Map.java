@@ -47,15 +47,6 @@ public class Map {
 //        }
 //    }
 
-//    public void printMap(int[][] a) {
-//        System.out.println();
-//        for (int i = 0; i < a.length; i++) {
-//            System.out.print(a[i][0]);
-//            for (int j = 1; j < a[0].length; j++)
-//                System.out.print(" " + a[i][j]);
-//            System.out.println();
-//        }
-//    }
     public void printMap(String[][] map) {
         System.out.println();
         System.out.print("r\\c ");
