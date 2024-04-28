@@ -49,14 +49,26 @@ public class Map {
         printMap(mineMap);
 
     }
-
+    public int hint(int r, int c) {
+        int mine_nearby = 0;
+        int[] dx = new int[] {0, 0, 1, -1, 1, -1, 1, -1};
+        int[] dy = new int[] {1, -1, 0, 0, 1, -1, -1, 1};
+        for (int i = 0; i < 8; i++) {
+            int newRow = r + dx[i];
+            int newCol = c + dy[i];
+            if (newRow >= 0 && newRow < width && newCol >= 0 && newCol < width) {
+                if (minePosition.containsValue((newRow * width) + newCol)) mine_nearby++;
+            }
+        }
+        System.out.println("there are \""+mine_nearby+"\" mines nearby");
+        return mine_nearby;
+    }
     public int checkMine(int r, int c) {
         int pos = (r*width) + c;
 
         if (minePosition.containsValue(pos) && !isClicked[pos]) {
             isClicked[pos] = true;
             System.out.println("   Find mine at (" + r + ", " + c + ")");
-//            return pos;
             return 1;
         } else if (isClicked[pos]) {
             System.out.println("you already find!!");
@@ -91,6 +103,4 @@ public class Map {
         displayMap[x][y] = "X";
         printMap(displayMap);
     }
-
-
 }
