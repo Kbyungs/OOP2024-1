@@ -10,7 +10,7 @@ import java.util.*;
 
 class MineClient {
     static int inPort = 9999;
-    static String address ="10.10.193.49";
+    static String address ="192.168.0.6";
     static public PrintWriter out;
     static public BufferedReader in;
     static int width = 0;
@@ -101,12 +101,17 @@ class MineClient {
         }
         out.println(r+","+c);
 
+//        String msg = in.readLine();
+//        int result = Integer.parseInt(msg);
         String msg = in.readLine();
-        int result = Integer.parseInt(msg);
+        String[] parts = msg.split("\\+");
+        int result = Integer.parseInt(parts[0]);
+        int hint = Integer.parseInt(parts[1]);
         if (result>0) {
             System.out.println("   Find mine at ("+r+", "+c+")");
             num_try++; num_success++;
             map.updateMap(r,c);
+            System.out.println("there are \""+hint+"\" mines nearby");
             return 1;
         } else if (result == 0) {
             System.out.println("you already find!!");
@@ -115,6 +120,7 @@ class MineClient {
             System.out.println("   No mine at ("+r+", "+c+")");
             num_try++;
             map.updateMapFailed(r,c);
+            System.out.println("there are \""+hint+"\" mines nearby");
             return 0;
         }
     }
