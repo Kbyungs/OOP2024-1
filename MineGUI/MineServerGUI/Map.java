@@ -47,16 +47,32 @@ public class Map {
 
     }
 
+    public int numMine(int r, int c) {
+        if (minePosition.containsValue(r*width+c))
+            return -1;
+        int mine_nearby = 0;
+        int[] dx = new int[] {0, 0, 1, -1, 1, -1, 1, -1};
+        int[] dy = new int[] {1, -1, 0, 0, 1, -1, -1, 1};
+        for (int i = 0; i < 8; i++) {
+            int newRow = r + dx[i];
+            int newCol = c + dy[i];
+            if (newRow >= 0 && newRow < width && newCol >= 0 && newCol < width) {
+                if (minePosition.containsValue((newRow * width) + newCol)) mine_nearby++;
+            }
+        }
+        return mine_nearby;
+    }
+
     public int checkMine(int x, int y) {
         int pos = (x*width) + y;
 
         if (minePosition.containsValue(pos)) {
             //System.out.println("   Find mine at ("+x+", "+y+")");
-            return pos;
+            return  -1;
         }
         else {
             //System.out.println("   No mine at ("+x+", "+y+")");
-            return -1;
+            return numMine(x,y);
         }
 
     }
@@ -75,6 +91,4 @@ public class Map {
         displayMap[x][y]=1;
         printMap(displayMap);
     }
-
-
 }
