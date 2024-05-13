@@ -97,13 +97,14 @@ class MineServerGUI {
 
             p1.setLayout(new GridLayout(width, width));
             buttons = new JButton[width*width];
-            for (int i=0; i<width*width; i++) {
+            for (int i = 0; i < width*width; i++) {
                 int x = i/width;
                 int y = i%width;
-                if (map.checkMine(x, y)>=0)
+                int num_mine = map.checkMine(x,y);
+                if (num_mine == -1)
                     buttons[i] = new JButton("M");
                 else
-                    buttons[i] = new JButton(" ");
+                    buttons[i] = new JButton(num_mine+"");
                 p1.add(buttons[i]);
             }
             cont.validate();
@@ -119,6 +120,12 @@ class MineServerGUI {
                     msg = in.readLine();
                     if (msg==null) continue;
                     if(msg.equalsIgnoreCase("done")) {
+                        System.out.println("Success found "+num_mine+" mines !");
+                        break;
+                    }
+                    if(msg.equals("retry")) {
+                        frame.dispose();
+                        System.out.println("retry");
                         break;
                     }
                     String[] arr = msg.split(",");
@@ -127,26 +134,21 @@ class MineServerGUI {
 
                     int result = map.checkMine(x,y);
                     out.println(""+result);
-                    if(result >= 0) {
-                        map.updateMap(x, y);
+                    if (result == -1) {
+                        map.updateMap(x,y);
+                        num_mine--;
+                        t0.setText(num_mine+" mines");
                     }
-
-                    if (result>=0)
+                    if (result == -1)
                         buttons[x*width+y].setText("O");
                     else
                         buttons[x*width+y].setText("X");
-
                 }
-
-                System.out.println("Success found "+num_mine+" mines !");
                 out.close();
                 in.close();
                 socket.close();
             }
             catch (IOException e) { }
         }
-
-
     }
-
 } 
