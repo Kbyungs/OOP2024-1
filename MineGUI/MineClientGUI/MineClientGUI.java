@@ -16,7 +16,7 @@ import javax.swing.event.ChangeListener;
 
 class MineClientGUI extends JFrame {
     static int inPort = 9999;
-    static String address ="192.168.0.23";
+    static String address ="192.168.0.6";
         static public PrintWriter out;
         static public BufferedReader in;
     static int width=0;
